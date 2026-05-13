@@ -2,7 +2,7 @@
 Simple command line tool for fetching and setting system info on ASUS laptops
 ## Install
 1. [Install Rust](https://rust-lang.org/tools/install/)
-2. Run `sudo cargo install --path . --root /usr/local`
+2. Run `sudo env PATH=$PATH HOME=$HOME cargo install --path . --root /usr/local`
 This installs it to /usr/local/bin/asus, so you can use it anywhere.
 ## Features
 ### Get
