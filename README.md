@@ -13,4 +13,4 @@ Simple command line tool for fetching and setting system info on ASUS laptops
 Tested on:
 - ASUS Vivobook S16 M3607HA
 
-If you have another laptop and it doesn't work, you probably have different /sys/class paths. Contact me and I can add them
+If you have another laptop and it doesn't work, you probably have different /sys/class paths. Contact me and I can add them, or create a pull request if you can do it yourself.
