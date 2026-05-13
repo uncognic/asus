@@ -1,8 +1,10 @@
 use clap::{Parser, Subcommand};
 mod commands;
 use commands::{
-    get_battery_threshold, get_fan_speed_rpm, get_profile, set_battery_threshold, set_profile,
+    get_battery_threshold, get_fan_speed, get_profile, set_battery_threshold, set_profile,
 };
+
+use crate::commands::get_cpu_temp;
 
 #[derive(Parser)]
 #[command(name = "asus", about = "ASUS laptop control")]
@@ -27,7 +29,8 @@ enum Cmd {
 enum GetTarget {
     BatteryThreshold,
     Profile,
-    FanSpeedRpm,
+    FanSpeed,
+    CpuTemp,
 }
 
 #[derive(Subcommand)]
@@ -63,7 +66,8 @@ fn main() {
         Cmd::Get { target } => match target {
             GetTarget::BatteryThreshold => get_battery_threshold(),
             GetTarget::Profile => get_profile(),
-            GetTarget::FanSpeedRpm => get_fan_speed_rpm(),
+            GetTarget::FanSpeed => get_fan_speed(),
+            GetTarget::CpuTemp => get_cpu_temp(),
         },
         Cmd::Set { target } => match target {
             SetTarget::BatteryThreshold { value } => set_battery_threshold(value),
