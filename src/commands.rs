@@ -4,6 +4,7 @@ use std::fs;
 const BATTERY_PATH: &str = "/sys/class/power_supply/BAT0/charge_control_end_threshold";
 const PLATFORM_PROFILE_PATH: &str = "/sys/firmware/acpi/platform_profile";
 const CPU_TEMP_PATH: &str = "/sys/class/hwmon/hwmon8/temp1_input";
+const MAX_RPM: u32 = 5800;
 
 pub fn read(path: &str) -> Result<String, String> {
     fs::read_to_string(path)
@@ -35,7 +36,9 @@ pub fn get_profile() -> Result<String, String> {
 
 pub fn get_fan_speed() -> Result<String, String> {
     let result = read("/sys/class/hwmon/hwmon1/fan1_input")?;
-    Ok(format!("{result} RPM"))
+    let rpm: u32 = result.trim().parse().map_err(|e| format!("parse error: {e}"))?;
+    let percentage = rpm * 100 / MAX_RPM;
+    Ok(format!("{percentage}% ({result} RPM)"))
 }
 
 pub fn set_battery_threshold(value: u8) -> Result<String, String> {
