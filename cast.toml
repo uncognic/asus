@@ -1,0 +1,20 @@
+[package]
+name     = "asus"
+version  = "0.1.0"
+std      = "c99"
+compiler = "gcc"
+
+[[target]]
+name    = "asus"
+src     = ["src/**/*.c"]
+include = ["include"]
+out     = "build"
+
+[profile.debug]
+flags = ["-g", "-fsanitize=address,undefined", "-O0"]
+
+[profile.release]
+flags = ["-O3", "-DNDEBUG"]
+
+[install]
+prefix = "/usr/local"
