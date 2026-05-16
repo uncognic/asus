@@ -1,7 +1,0 @@
-[
-  {
-    "directory": "/home/user/git/personal/asus",
-    "command": "gcc -std=c99 -Wall -Wextra -Iinclude -g -fsanitize=address,undefined -O0",
-    "file": "/home/user/git/personal/asus/src/main.c"
-  }
-]

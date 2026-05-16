@@ -56,19 +56,19 @@ static int sysfs_write(const char *path, const char *val) {
 static void cmd_get(const char *target) {
     char buf[64];
 
-    if (strcmp(target, "battery-threshold") == 0) {
+    if (strcmp(target, "battery-threshold") == 0 || strcmp(target, "b") == 0) {
         if (sysfs_read(BATTERY_PATH, buf, sizeof(buf)) == 0) {
             printf("%s%%\n", buf);
         }
-    } else if (strcmp(target, "profile") == 0) {
+    } else if (strcmp(target, "profile") == 0 || strcmp(target, "p") == 0) {
         if (sysfs_read(PROFILE_PATH, buf, sizeof(buf)) == 0) {
             printf("%s\n", buf);
         }
-    } else if (strcmp(target, "fan-rpm") == 0) {
+    } else if (strcmp(target, "fan-rpm") == 0 || strcmp(target, "f") == 0) {
         if (sysfs_read(FAN_RPM_PATH, buf, sizeof(buf)) == 0) {
             printf("%s RPM\n", buf);
         }
-    } else if (strcmp(target, "cpu-temp") == 0) {
+    } else if (strcmp(target, "cpu-temp") == 0 || strcmp(target, "c") == 0) {
         if (sysfs_read(CPU_TEMP_PATH, buf, sizeof(buf)) == 0) {
             float milli_c = atof(buf);
             printf("%.1f°C\n", milli_c / 1000.0f);
@@ -80,7 +80,7 @@ static void cmd_get(const char *target) {
 }
 
 static void cmd_set(const char *target, const char *value) {
-    if (strcmp(target, "battery-threshold") == 0) {
+    if (strcmp(target, "battery-threshold") == 0 || strcmp(target, "b") == 0) {
         int v = atoi(value);
         if (v < 0 || v > 100) {
             fprintf(stderr, "value must be 0-100\n");
@@ -89,7 +89,7 @@ static void cmd_set(const char *target, const char *value) {
         if (sysfs_write(BATTERY_PATH, value) == 0) {
             printf("battery threshold set to %s%%\n", value);
         }
-    } else if (strcmp(target, "profile") == 0) {
+    } else if (strcmp(target, "profile") == 0 || strcmp(target, "p") == 0) {
         if (strcmp(value, "quiet") != 0 && strcmp(value, "balanced") != 0 &&
             strcmp(value, "performance") != 0) {
             fprintf(stderr, "profile must be: quiet, balanced, performance\n");
@@ -107,10 +107,10 @@ static void cmd_set(const char *target, const char *value) {
 static void usage(void) {
     fprintf(stderr, "usage:\n"
                     "  asus get\n"
-                    "    <battery-threshold|profile|fan-rpm|cpu-temp>\n"
+                    "    <battery-threshold/b|profile/p|fan-rpm/f|cpu-temp/c>\n"
                     "  asus set \n"
-                    "     battery-threshold <0-100>\n"
-                    "     profile <quiet|balanced|performance>\n");
+                    "     battery-threshold/b <0-100>\n"
+                    "     profile/p <quiet|balanced|performance>\n");
     exit(1);
 }
 
