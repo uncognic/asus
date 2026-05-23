@@ -21,6 +21,8 @@
 #define PROFILE_PATH "/sys/firmware/acpi/platform_profile"
 #define FAN_RPM_PATH "/sys/class/hwmon/hwmon1/fan1_input"
 #define CPU_TEMP_PATH "/sys/class/hwmon/hwmon8/temp1_input"
+#define BATTERY_VOLTAGE_PATH "/sys/class/power_supply/BAT0/voltage_now"
+#define BATTERY_CURRENT_PATH "/sys/class/power_supply/BAT0/current_now"
 
 static int sysfs_read(const char *path, char *buf, size_t len) {
     FILE *f = fopen(path, "r");
@@ -72,6 +74,21 @@ static void cmd_get(const char *target) {
         if (sysfs_read(CPU_TEMP_PATH, buf, sizeof(buf)) == 0) {
             float milli_c = atof(buf);
             printf("%.1f°C\n", milli_c / 1000.0f);
+        }
+    } else if (strcmp(target, "battery-watt") == 0 || strcmp(target, "w") == 0) {
+
+        char voltage_buf[64];
+        char current_buf[64];
+
+        if (sysfs_read(BATTERY_VOLTAGE_PATH, voltage_buf, sizeof(voltage_buf)) == 0 &&
+            sysfs_read(BATTERY_CURRENT_PATH, current_buf, sizeof(current_buf)) == 0) {
+
+            double voltage = atof(voltage_buf); // V
+            double current = atof(current_buf); // A
+
+            double watts = (voltage * current) / 1e12;
+
+            printf("%.2f W\n", watts);
         }
     } else {
         fprintf(stderr, "unknown target: %s\n", target);
