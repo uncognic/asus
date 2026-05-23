@@ -23,6 +23,11 @@
 #define CPU_TEMP_PATH "/sys/class/hwmon/hwmon8/temp1_input"
 #define BATTERY_VOLTAGE_PATH "/sys/class/power_supply/BAT0/voltage_now"
 #define BATTERY_CURRENT_PATH "/sys/class/power_supply/BAT0/current_now"
+#define BATTERY_CHARGE_FULL_PATH "/sys/class/power_supply/BAT0/charge_full"
+#define BATTERY_CHARGE_FULL_DESIGN_PATH "/sys/class/power_supply/BAT0/charge_full_design"
+#define BATTERY_PERCENTAGE_PATH "/sys/class/power_supply/BAT0/capacity"
+#define BATTERY_CYCLES_PATH "/sys/class/power_supply/BAT0/cycle_count"
+#define BATTERY_STATUS_PATH "/sys/class/power_supply/BAT0/status"
 
 static int sysfs_read(const char *path, char *buf, size_t len) {
     FILE *f = fopen(path, "r");
@@ -90,6 +95,20 @@ static void cmd_get(const char *target) {
 
             printf("%.2f W\n", watts);
         }
+    } else if (strcmp(target, "battery-health") == 0 || strcmp(target, "h") == 0) {
+        char charge_full_buf[64];
+        char charge_design_buf[64];
+
+        if (sysfs_read(BATTERY_CHARGE_FULL_DESIGN_PATH, charge_design_buf,
+                       sizeof(charge_design_buf)) == 0 &&
+            sysfs_read(BATTERY_CHARGE_FULL_PATH, charge_full_buf, sizeof(charge_design_buf)) == 0) {
+            double charge_full = atof(charge_full_buf);
+            double charge_design = atof(charge_design_buf);
+
+            double health = (charge_full /= charge_design) * 100;
+
+            printf("%.2f %%\n", health);
+        }
     } else {
         fprintf(stderr, "unknown target: %s\n", target);
         exit(1);
@@ -124,10 +143,11 @@ static void cmd_set(const char *target, const char *value) {
 static void usage(void) {
     fprintf(stderr, "usage:\n"
                     "  asus get\n"
-                    "    <battery-threshold/b|profile/p|fan-rpm/f|cpu-temp/c>\n"
+                    "    <battery-threshold/b | profile/p | fan-rpm/f | cpu-temp/c | "
+                    "battery-watt/w | battery-health/h>\n"
                     "  asus set \n"
                     "     battery-threshold/b <0-100>\n"
-                    "     profile/p <quiet|balanced|performance>\n");
+                    "     profile/p <quiet | balanced | performance>\n");
     exit(1);
 }
 
