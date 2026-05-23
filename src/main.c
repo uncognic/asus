@@ -109,6 +109,10 @@ static void cmd_get(const char *target) {
 
             printf("%.2f %%\n", health);
         }
+    } else if (strcmp(target, "battery-level") == 0 || strcmp(target, "bl") == 0) {
+        if (sysfs_read(BATTERY_PERCENTAGE_PATH, buf, sizeof(buf)) == 0) {
+            printf("%s %%\n", buf);
+        }
     } else {
         fprintf(stderr, "unknown target: %s\n", target);
         exit(1);
@@ -144,7 +148,7 @@ static void usage(void) {
     fprintf(stderr, "usage:\n"
                     "  asus get\n"
                     "    <battery-threshold/b | profile/p | fan-rpm/f | cpu-temp/c | "
-                    "battery-watt/w | battery-health/h>\n"
+                    "battery-watt/w | battery-health/h | battery-level/bl>\n"
                     "  asus set \n"
                     "     battery-threshold/b <0-100>\n"
                     "     profile/p <quiet | balanced | performance>\n");
