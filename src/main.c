@@ -117,6 +117,10 @@ static void cmd_get(const char *target) {
         if (sysfs_read(BATTERY_CYCLES_PATH, buf, sizeof(buf)) == 0) {
             printf("%s cycles\n", buf);
         }
+    } else if (strcmp(target, "battery-status") == 0 || strcmp(target, "bs") == 0) {
+        if (sysfs_read(BATTERY_STATUS_PATH, buf, sizeof(buf)) == 0) {
+            printf("%s\n", buf);
+        }
     } else {
         fprintf(stderr, "unknown target: %s\n", target);
         exit(1);
@@ -152,7 +156,8 @@ static void usage(void) {
     fprintf(stderr, "usage:\n"
                     "  asus get\n"
                     "    <battery-threshold/b | profile/p | fan-rpm/f | cpu-temp/c | "
-                    "battery-watt/w | battery-health/h | battery-level/bl | battery-cycles/bc>\n"
+                    "battery-watt/w | battery-health/h | battery-level/bl | battery-cycles/bc | "
+                    "battery-status/bs>\n"
                     "  asus set \n"
                     "     battery-threshold/b <0-100>\n"
                     "     profile/p <quiet | balanced | performance>\n");
